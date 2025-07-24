@@ -1,0 +1,26 @@
+name: Daily Blog Post
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # 每天 UTC 8 點（台灣下午4點）執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client openai
+
+      - name: Run blog poster script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python auto_blog_poster.py
